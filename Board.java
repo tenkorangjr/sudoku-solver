@@ -2,18 +2,125 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 public class Board {
 
     Cell[][] arr;
+    public static final int SIZE = 9;
+
+    Random random;
 
     public Board() {
         arr = new Cell[9][9];
+
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 arr[i][j] = new Cell(i, j, 0);
             }
         }
+    }
+
+    public Board(int filled) {
+        random = new Random();
+        int[][] filledPositions = generateUniquePositions(filled);
+        arr = new Cell[9][9];
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                arr[i][j] = new Cell(i, j, 0);
+            }
+        }
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (!positionContains(filledPositions, i, j)) {
+                    arr[i][j] = new Cell(i, j, 0);
+                } else {
+                    int newValue = random.nextInt(10);
+                    while (!validValue(i, j, newValue)) {
+                        newValue = random.nextInt(10);
+                    }
+
+                    arr[i][j] = new Cell(i, j, newValue);
+                }
+            }
+        }
+    }
+
+    private int[][] generateUniquePositions(int number) {
+        /*
+         * Generate unique positions for filled positions
+         */
+
+        int[][] positions = new int[number][2];
+
+        for (int i = 0; i < number; i++) {
+            int row = random.nextInt(9);
+            int col = random.nextInt(9);
+            while (positionContains(positions, row, col)) {
+                row = random.nextInt(9);
+                col = random.nextInt(9);
+            }
+            positions[i][0] = row;
+            positions[i][1] = col;
+        }
+        return positions;
+    }
+
+    private boolean positionContains(int[][] positions, int row, int col) {
+        /*
+         * Check if an array of positions contains (row, col)
+         */
+        for (int[] position : positions) {
+            if (position[0] == row && position[1] == col) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean validValue(int row, int column, int value) {
+        /*
+         * Test to see if a value is value for a coordinate
+         */
+        // Test row
+        for (int r = 0; r < 9; r++) {
+            if (r != row && arr[r][column].getValue() == value) {
+                return false;
+            }
+        }
+
+        for (int c = 0; c < 9; c++) {
+            if (c != column && arr[row][c].getValue() == value) {
+                return false;
+            }
+        }
+
+        for (int r = (row / 3) * 3; r < ((row / 3) * 3) + 3; r++) {
+            for (int c = (column / 3) * 3; c < ((column / 3) * 3) + 3; c++) {
+                if (row != r && column != c && arr[r][c].getValue() == value) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean validSolution() {
+        /*
+         * Check if the board has been completed
+         */
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                int currVal = arr[r][c].getValue();
+                if (!validValue(r, c, currVal) || currVal < 1 || currVal > 9) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Cell get(int row, int col) {
@@ -105,18 +212,13 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        Board board = new Board();
-        if (args.length > 0) {
-            board.read(args[0]);
-            System.out.println(board);
-        } else {
-            System.out.println("Usage: filename for board");
-        }
-
-        // for (Cell[] row : board.arr) {
-        // for (Cell cell : row) {
-        // System.out.println(cell.isLocked());
-        // }
+        Board board = new Board(17);
+        System.out.println(board);
+        // if (args.length > 0) {
+        // board.read(args[0]);
+        // System.out.println(board);
+        // } else {
+        // System.out.println("Usage: filename for board");
         // }
 
     }
