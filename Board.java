@@ -3,19 +3,24 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
+import java.awt.*;;
 
 public class Board {
 
     Cell[][] arr;
     public static final int SIZE = 9;
+    private int numberOfLockedCells;
+    boolean finished;
 
     Random random;
 
     public Board() {
-        arr = new Cell[9][9];
+        arr = new Cell[getRows()][getCols()];
+        finished = false;
+        numberOfLockedCells = 0;
 
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
                 arr[i][j] = new Cell(i, j, 0);
             }
         }
@@ -24,16 +29,18 @@ public class Board {
     public Board(int filled) {
         random = new Random();
         int[][] filledPositions = generateUniquePositions(filled);
-        arr = new Cell[9][9];
+        numberOfLockedCells = filled;
+        finished = false;
+        arr = new Cell[getRows()][getCols()];
 
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
                 arr[i][j] = new Cell(i, j, 0);
             }
         }
 
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
                 if (!positionContains(filledPositions, i, j)) {
                     arr[i][j] = new Cell(i, j, 0);
                 } else {
@@ -46,6 +53,61 @@ public class Board {
                 }
             }
         }
+    }
+
+    public void draw(Graphics g, int scale) {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
+                get(i, j).draw(g, j * scale + 5, i * scale + 10, scale);
+            }
+        }
+        if (finished) {
+            if (validSolution()) {
+                g.setColor(new Color(0, 127, 0));
+                g.drawChars("Hurray!".toCharArray(), 0, "Hurray!".length(), scale * 3 + 5, scale * 10 + 10);
+            } else {
+                g.setColor(new Color(127, 0, 0));
+                g.drawChars("No solution!".toCharArray(), 0, "No Solution!".length(), scale * 3 + 5, scale * 10 + 10);
+            }
+        }
+    }
+
+    public int numLocked() {
+        /*
+         * Get the total number of locked cells
+         */
+
+        return numberOfLockedCells;
+    }
+
+    public int getRows() {
+        /*
+         * Get the total row of a board
+         */
+
+        return SIZE;
+    }
+
+    public int getCols() {
+        /*
+         * Get the total column of a board
+         */
+
+        return SIZE;
+    }
+
+    public boolean isLocked(int r, int c) {
+        /*
+         * Check whether the cell at (r,c) is locked
+         */
+        return get(r, c).isLocked();
+    }
+
+    public int value(int r, int c) {
+        /*
+         * Return the value at (r,c)
+         */
+        return get(r, c).getValue();
     }
 
     private int[][] generateUniquePositions(int number) {
@@ -84,14 +146,14 @@ public class Board {
         /*
          * Test to see if a value is value for a coordinate
          */
-        // Test row
-        for (int r = 0; r < 9; r++) {
+
+        for (int r = 0; r < getRows(); r++) {
             if (r != row && arr[r][column].getValue() == value) {
                 return false;
             }
         }
 
-        for (int c = 0; c < 9; c++) {
+        for (int c = 0; c < getCols(); c++) {
             if (c != column && arr[row][c].getValue() == value) {
                 return false;
             }
@@ -112,8 +174,8 @@ public class Board {
         /*
          * Check if the board has been completed
          */
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
+        for (int r = 0; r < getRows(); r++) {
+            for (int c = 0; c < getCols(); c++) {
                 int currVal = arr[r][c].getValue();
                 if (!validValue(r, c, currVal) || currVal < 1 || currVal > 9) {
                     return false;
@@ -212,7 +274,7 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        Board board = new Board(17);
+        Board board = new Board(40);
         System.out.println(board);
         // if (args.length > 0) {
         // board.read(args[0]);

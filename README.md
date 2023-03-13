@@ -1,2 +1,2 @@
-# Sudoku Solver
-Using Stacks to solve Sudoku game
+# Stacks for Sudoku Solver
+Stack for starting Sudoku Solver
