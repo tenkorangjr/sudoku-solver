@@ -60,7 +60,7 @@ public class Board {
                         newValue = random.nextInt(10);
                     }
 
-                    arr[i][j] = new Cell(i, j, newValue);
+                    arr[i][j] = new Cell(i, j, newValue, true);
                 }
             }
         }
