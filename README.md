@@ -1,2 +1,2 @@
-# Sudoku Solver
-Using DFS to solve a Sudoku board.
+# LinkedList Stack for Sudoku Solver
+Stack interface for Depth First Search

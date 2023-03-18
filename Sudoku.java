@@ -1,3 +1,8 @@
+/*
+ * Name: Michael Tenkorang
+ * Class Purpose: Working with the Stacks Abstract Data Structure, DFS and Backtracking
+ */
+
 public class Sudoku {
 
     Board board;
@@ -22,6 +27,30 @@ public class Sudoku {
         return 0;
     }
 
+    public Cell findNextBetterCell() {
+        /*
+         * Get the next cell with the fewest number of choices
+         */
+
+        Cell next = null;
+        int minNumChoices = 10;
+
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                Cell curr = board.get(r, c);
+                if (curr.getValue() == 0) {
+                    int numChoices = curr.getNumChoices(board);
+                    if (numChoices < minNumChoices) {
+                        minNumChoices = numChoices;
+                        next = curr;
+                    }
+                }
+            }
+        }
+
+        return next;
+    }
+
     public Cell findNextCell() {
         /*
          * Find the next cell that seems fit
@@ -30,7 +59,12 @@ public class Sudoku {
         for (int r = 0; r < 9; r++) {
             for (int c = 0; c < 9; c++) {
                 if (board.get(r, c).getValue() == 0) {
-                    return board.get(r, c);
+                    if (findNextValue(board.get(r, c)) != 0) {
+                        board.get(r, c).setValue(findNextValue(board.get(r, c)));
+                        return board.get(r, c);
+                    } else {
+                        return null;
+                    }
                 }
             }
         }
@@ -46,14 +80,16 @@ public class Sudoku {
             return true;
         }
 
-        if (10 > 0)
+        if (10 > 0) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        if (ld != null)
+        }
+        if (ld != null) {
             ld.repaint();
+        }
 
         int currRow = next.getRow();
         int currCol = next.getCol();
@@ -62,7 +98,7 @@ public class Sudoku {
             if (board.validValue(currRow, currCol, i)) {
                 board.get(currRow, currCol).setValue(i);
 
-                if (solveRec(findNextCell())) {
+                if (solveRec(findNextBetterCell())) { // change to findBestCell() to not use optimised version of method
                     return true;
                 }
             }
@@ -84,19 +120,16 @@ public class Sudoku {
 
             Cell next = findNextCell();
 
-            if (delay > 0) {
+            if (delay > 0)
                 try {
                     Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
-
-            if (ld != null) {
+            if (ld != null)
                 ld.repaint();
-            }
 
-            while (next == null && stack.size() > 0) {
+            while (next == null & stack.size() > 0) {
                 Cell temp = stack.pop();
                 int tempVal = findNextValue(temp);
                 temp.setValue(tempVal);
@@ -118,10 +151,19 @@ public class Sudoku {
     }
 
     public static void main(String[] args) {
-        Sudoku gameSudoku = new Sudoku(10);
-        System.out.println(gameSudoku.board);
+        if (args.length < 1) {
+            System.out.println("Usage: Include integer value for the number of originally filled cells");
+        } else {
+            Sudoku gameSudoku = new Sudoku(Integer.parseInt(args[0]));
+            System.out.println(gameSudoku.board);
 
-        gameSudoku.solveRec(gameSudoku.findNextCell());
-        System.out.println(gameSudoku.board);
+            long timeBefore = System.currentTimeMillis();
+            // gameSudoku.solveRec(gameSudoku.findNextCell());
+            gameSudoku.solve(10);
+            Long timeAfter = System.currentTimeMillis();
+            long timeUsed = timeAfter - timeBefore;
+            System.out.println(gameSudoku.board);
+            System.out.println(timeUsed);
+        }
     }
 }

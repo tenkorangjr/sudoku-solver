@@ -1,3 +1,8 @@
+/*
+ * Name: Michael Tenkorang
+ * Class Purpose: Working with the Stacks Abstract Data Structure, DFS and Backtracking
+ */
+
 public interface Stack<E> {
     /*
      * Adds item to the list of items

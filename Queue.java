@@ -1,6 +1,6 @@
 /*
  * Name: Michael Tenkorang
- * Class Purpose: Working with the Queue Abstract Data Structure
+ * Class Purpose: Working with the Stacks Abstract Data Structure, DFS and Backtracking
  */
 
 public interface Queue<T> extends Iterable<T> {

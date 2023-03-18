@@ -1,3 +1,8 @@
+/*
+ * Name: Michael Tenkorang
+ * Class Purpose: Working with the Stacks Abstract Data Structure, DFS and Backtracking
+ */
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,6 +20,9 @@ public class Board {
     Random random;
 
     public Board() {
+        /*
+         * Board Constructor without args
+         */
         arr = new Cell[getRows()][getCols()];
         finished = false;
         numberOfLockedCells = 0;
@@ -27,6 +35,9 @@ public class Board {
     }
 
     public Board(int filled) {
+        /*
+         * Board Constructor with args
+         */
         random = new Random();
         int[][] filledPositions = generateUniquePositions(filled);
         numberOfLockedCells = filled;
@@ -56,6 +67,9 @@ public class Board {
     }
 
     public void draw(Graphics g, int scale) {
+        /*
+         * Draw on the display
+         */
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getCols(); j++) {
                 get(i, j).draw(g, j * scale + 5, i * scale + 10, scale);
@@ -274,14 +288,13 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        Board board = new Board(40);
-        System.out.println(board);
-        // if (args.length > 0) {
-        // board.read(args[0]);
-        // System.out.println(board);
-        // } else {
-        // System.out.println("Usage: filename for board");
-        // }
+        Board board = new Board();
+        if (args.length > 0) {
+            board.read(args[0]);
+            System.out.println(board);
+        } else {
+            System.out.println("Usage: filename for board");
+        }
 
     }
 

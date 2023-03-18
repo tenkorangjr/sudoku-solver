@@ -8,6 +8,11 @@
 
 	The JPanel calls the Landscape's draw method to fill in content, so the
 	Landscape class needs a draw method.
+
+
+ * Name: Michael Tenkorang
+ * Class Purpose: Working with the Stacks Abstract Data Structure, DFS and Backtracking
+ 
  */
 
 import java.awt.BorderLayout;
